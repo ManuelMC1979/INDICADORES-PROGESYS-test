@@ -1013,7 +1013,24 @@ function render(id){
   if(id==="progresys-outbound") return renderIframe(el, "https://manuelmc1979.github.io/progresys-outbound-frontend/");
   if(id==="control-snl") return renderIframe(el, "https://controlsnl.onrender.com/login?error=1");
   if(id==="calidad-app") return renderIframe(el, "https://manuelmc1979.github.io/CALIDAD/");
-  if(id==="turnos-app"){ el.innerHTML=`<iframe src="https://progesys-turnos.vercel.app/login" style="width:100%;height:calc(100vh - 80px);border:none;border-radius:12px"></iframe>`; return; }
+  if(id==="turnos-app"){
+    /* Inicio de sesión automático: progesys-turnos usa el MISMO proyecto de Supabase, así que
+       le pasamos la sesión ya iniciada por postMessage (nunca por la URL) en vez de mostrarle
+       su propio login. La página /sso de ese lado espera este mensaje — ver su código. */
+    el.innerHTML=`<iframe id="turnosFrame" src="https://progesys-turnos.vercel.app/sso" style="width:100%;height:calc(100vh - 80px);border:none;border-radius:12px"></iframe>`;
+    const onMsgTurnos=(e)=>{
+      if(e.origin!=="https://progesys-turnos.vercel.app") return;
+      if(!e.data || e.data.type!=="progesys-sso-ready") return;
+      window.removeEventListener("message", onMsgTurnos);
+      SB.auth.getSession().then(({data})=>{
+        const s=data.session; if(!s) return;
+        const frame=document.getElementById("turnosFrame");
+        frame?.contentWindow.postMessage({type:"progesys-sso", access_token:s.access_token, refresh_token:s.refresh_token}, "https://progesys-turnos.vercel.app");
+      });
+    };
+    window.addEventListener("message", onMsgTurnos);
+    return;
+  }
   if(id==="turnos")    return renderTurnos(el);
   if(id==="config")    return renderConfig(el);
   if(id==="instrucciones") return renderInstr(el);
