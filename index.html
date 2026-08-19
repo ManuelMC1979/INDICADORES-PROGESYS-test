@@ -1013,7 +1013,7 @@ function render(id){
   if(id==="progresys-outbound") return renderIframe(el, "https://manuelmc1979.github.io/progresys-outbound-frontend/");
   if(id==="control-snl") return renderIframe(el, "https://controlsnl.onrender.com/login?error=1");
   if(id==="calidad-app") return renderIframe(el, "https://manuelmc1979.github.io/CALIDAD/");
-  if(id==="turnos-app") return renderIframe(el, "https://progesys-turnos.vercel.app/login");
+  if(id==="turnos-app"){ el.innerHTML=`<iframe src="https://progesys-turnos.vercel.app/login" style="width:100%;height:calc(100vh - 80px);border:none;border-radius:12px"></iframe>`; return; }
   if(id==="turnos")    return renderTurnos(el);
   if(id==="config")    return renderConfig(el);
   if(id==="instrucciones") return renderInstr(el);
