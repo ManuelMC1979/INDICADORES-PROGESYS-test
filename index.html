@@ -592,6 +592,7 @@ const MODULES = [
  {id:"progresys-outbound", ic:"☎", name:"Progresys Outbound", grp:"PANELES"},
  {id:"control-snl", ic:"🔐", name:"Control SNL", grp:"PANELES"},
  {id:"calidad-app", ic:"✓", name:"Calidad", grp:"PANELES"},
+ {id:"turnos-app", ic:"📅", name:"Turnos", grp:"PANELES", hidden:true},
  {id:"ejecutivos",ic:"⚉", name:"Ejecutivos", grp:"DATOS", key:"ejecutivos", hidden:true,
   cols:[{k:"rut",n:"Rut"},{k:"nombre",n:"Nombre completo"},{k:"supervisor",n:"Supervisor"},{k:"equipo",n:"Equipo"},{k:"cargo",n:"Cargo"},{k:"ingreso",n:"Fecha ingreso",t:"date"},{k:"jornada",n:"Jornada"},{k:"estado",n:"Estado",t:"sel",opts:["Activo","Inactivo","Vacaciones","Licencia"]},{k:"correo",n:"Correo"},{k:"telefono",n:"Teléfono"},{k:"obs",n:"Observaciones"}]},
  {id:"asistencia",ic:"◷", name:"Asistencia", grp:"DATOS", key:"asistencia", hidden:true,
@@ -624,7 +625,7 @@ const MOD = Object.fromEntries(MODULES.map(m=>[m.id,m]));
 function buildNav(){
   const nav=document.getElementById("nav"); let g=""; let h="";
   let visibles=MODULES.filter(m=>!m.hidden);
-  if(SESION && SESION.rol==="ejecutivo") visibles=visibles.filter(m=>m.id==="dashEjec");
+  if(SESION && SESION.rol==="ejecutivo") visibles=MODULES.filter(m=>m.id==="dashEjec"||m.id==="turnos-app");
   visibles.forEach(m=>{ if(m.grp!==g){ g=m.grp; h+=`<div class="grp">${g}</div>`; }
     h+=`<button data-p="${m.id}"><span class="ic">${m.ic}</span><span class="tx">${m.name}</span></button>`; });
   nav.innerHTML=h;
@@ -1012,6 +1013,7 @@ function render(id){
   if(id==="progresys-outbound") return renderIframe(el, "https://manuelmc1979.github.io/progresys-outbound-frontend/");
   if(id==="control-snl") return renderIframe(el, "https://controlsnl.onrender.com/login?error=1");
   if(id==="calidad-app") return renderIframe(el, "https://manuelmc1979.github.io/CALIDAD/");
+  if(id==="turnos-app") return renderIframe(el, "https://progesys-turnos.vercel.app/login");
   if(id==="turnos")    return renderTurnos(el);
   if(id==="config")    return renderConfig(el);
   if(id==="instrucciones") return renderInstr(el);
